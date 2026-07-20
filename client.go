@@ -934,6 +934,63 @@ func (c *Client) CustomersUpload(customers []Customer, site ...string) (Customer
 	return resp, status, nil
 }
 
+// CustomersPushTokensBatch creates or edits customer mobile application push tokens in batch.
+//
+// For more information see https://docs.retailcrm.ru/Developers/API/APIMethods#post--api-v5-customers-push-tokens-batch
+//
+// Example:
+//
+//	var client = retailcrm.New("https://demo.url", "09jIJ")
+//
+//	data, status, err := client.CustomersPushTokensBatch([]retailcrm.PushTokenInput{
+//		{
+//			Customer: retailcrm.PushTokenCustomer{
+//				ExternalID: "customer-1",
+//				Site:       "main",
+//			},
+//			FID:        "firebase-installation-id",
+//			Type:       "firebase-project",
+//			DeviceType: "android",
+//			Categories: []string{"news"},
+//		},
+//	})
+//
+//	if err != nil {
+//		if apiErr, ok := retailcrm.AsAPIError(err); ok {
+//			log.Fatalf("http status: %d, %s", status, apiErr.String())
+//		}
+//
+//		log.Fatalf("http status: %d, error: %s", status, err)
+//	}
+//
+//	for _, pushToken := range data.PushTokens {
+//		log.Printf("%v\n", pushToken)
+//	}
+func (c *Client) CustomersPushTokensBatch(pushTokens []PushTokenInput) (CustomersPushTokensBatchResponse, int, error) {
+	var resp CustomersPushTokensBatchResponse
+
+	pushTokensJSON, err := marshalToString(&pushTokens)
+	if err != nil {
+		return resp, 0, err
+	}
+
+	p := url.Values{
+		"pushTokens": {pushTokensJSON},
+	}
+
+	data, status, err := c.PostRequest("/customers/push-tokens/batch", p)
+	if err != nil {
+		return resp, status, err
+	}
+
+	err = json.Unmarshal(data, &resp)
+	if err != nil {
+		return resp, status, err
+	}
+
+	return resp, status, nil
+}
+
 // Customer returns information about customer
 //
 // For more information see http://www.simla.com/docs/Developers/API/APIVersions/APIv5#get--api-v5-customers-externalId
