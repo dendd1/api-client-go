@@ -814,7 +814,7 @@ func TestClient_CustomersPushTokensBatch(t *testing.T) {
 	pushTokensJSON, err := json.Marshal(pushTokens)
 	require.NoError(t, err)
 
-	p := url.Values{"pushTokens": {string(pushTokensJSON)}}
+	p := url.Values{pushTokensParameter: {string(pushTokensJSON)}}
 
 	gock.New(crmURL).
 		Post(prefix + "/customers/push-tokens/batch").
@@ -855,7 +855,7 @@ func TestClient_CustomersPushTokensBatchFail(t *testing.T) {
 	pushTokensJSON, err := json.Marshal(pushTokens)
 	require.NoError(t, err)
 
-	p := url.Values{"pushTokens": {string(pushTokensJSON)}}
+	p := url.Values{pushTokensParameter: {string(pushTokensJSON)}}
 
 	gock.New(crmURL).
 		Post(prefix + "/customers/push-tokens/batch").

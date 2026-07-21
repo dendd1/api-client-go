@@ -18,6 +18,8 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
+const pushTokensParameter = "pushTokens"
+
 // New initialize client.
 func New(url string, key string) *Client {
 	return &Client{
@@ -975,7 +977,7 @@ func (c *Client) CustomersPushTokensBatch(pushTokens []PushTokenInput) (Customer
 	}
 
 	p := url.Values{
-		"pushTokens": {pushTokensJSON},
+		pushTokensParameter: {pushTokensJSON},
 	}
 
 	data, status, err := c.PostRequest("/customers/push-tokens/batch", p)
